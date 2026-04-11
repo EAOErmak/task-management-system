@@ -8,16 +8,36 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetAllDiaryEntries(c *gin.Context) {
+func GetAllMineDiaryEntries(c *gin.Context) {
+	claims, ok := currentAuthClaims(c)
+	if !ok {
+		return
+	}
+
 	db := diaryDB(c)
 	if db == nil {
 		return
 	}
 
-	query := preloadDiaryEntry(db)
+	query := preloadDiaryEntry(db).Where("user_id = ?", claims.UserID)
 
 	var entries []models.DiaryEntry
 	if err := query.Find(&entries).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, entries)
+}
+
+func GetAllDiaryEntriesForAllUsers(c *gin.Context) {
+	db := diaryDB(c)
+	if db == nil {
+		return
+	}
+
+	var entries []models.DiaryEntry
+	if err := preloadDiaryEntry(db).Find(&entries).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -32,6 +52,11 @@ func CreateDiaryEntry(c *gin.Context) {
 		return
 	}
 
+	claims, ok := currentAuthClaims(c)
+	if !ok {
+		return
+	}
+
 	db := diaryDB(c)
 	if db == nil {
 		return
@@ -42,6 +67,8 @@ func CreateDiaryEntry(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	entry.UserID = claims.UserID
 
 	if err := db.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(entry).Error; err != nil {
@@ -67,13 +94,18 @@ func GetDiaryEntryByID(c *gin.Context) {
 		return
 	}
 
+	claims, ok := currentAuthClaims(c)
+	if !ok {
+		return
+	}
+
 	db := diaryDB(c)
 	if db == nil {
 		return
 	}
 
 	var entry models.DiaryEntry
-	if err := preloadDiaryEntry(db).First(&entry, entryID).Error; err != nil {
+	if err := preloadDiaryEntry(db).Where("user_id = ?", claims.UserID).First(&entry, entryID).Error; err != nil {
 		writeDiaryError(c, err)
 		return
 	}
@@ -83,6 +115,11 @@ func GetDiaryEntryByID(c *gin.Context) {
 
 func UpdateDiaryEntry(c *gin.Context) {
 	entryID, ok := parseUintParam(c, "id")
+	if !ok {
+		return
+	}
+
+	claims, ok := currentAuthClaims(c)
 	if !ok {
 		return
 	}
@@ -100,7 +137,7 @@ func UpdateDiaryEntry(c *gin.Context) {
 
 	var entry models.DiaryEntry
 	if err := db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.First(&entry, entryID).Error; err != nil {
+		if err := tx.Where("user_id = ?", claims.UserID).First(&entry, entryID).Error; err != nil {
 			return err
 		}
 
@@ -120,7 +157,7 @@ func UpdateDiaryEntry(c *gin.Context) {
 			return err
 		}
 
-		return preloadDiaryEntry(tx).First(&entry, entry.ID).Error
+		return preloadDiaryEntry(tx).Where("user_id = ?", claims.UserID).First(&entry, entry.ID).Error
 	}); err != nil {
 		writeDiaryError(c, err)
 		return
@@ -135,6 +172,11 @@ func DeleteDiaryEntry(c *gin.Context) {
 		return
 	}
 
+	claims, ok := currentAuthClaims(c)
+	if !ok {
+		return
+	}
+
 	db := diaryDB(c)
 	if db == nil {
 		return
@@ -142,7 +184,7 @@ func DeleteDiaryEntry(c *gin.Context) {
 
 	var entry models.DiaryEntry
 	if err := db.Transaction(func(tx *gorm.DB) error {
-		if err := preloadDiaryEntry(tx).First(&entry, entryID).Error; err != nil {
+		if err := preloadDiaryEntry(tx).Where("user_id = ?", claims.UserID).First(&entry, entryID).Error; err != nil {
 			return err
 		}
 

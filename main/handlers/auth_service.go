@@ -22,6 +22,7 @@ const (
 )
 
 type authClaims struct {
+	UserID   uint   `json:"user_id"`
 	Username string `json:"username"`
 	Role     string `json:"role,omitempty"`
 	jwt.RegisteredClaims
@@ -88,6 +89,7 @@ func generateToken(user models.User) (string, error) {
 	now := time.Now().UTC()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, authClaims{
+		UserID:   user.ID,
 		Username: user.Username,
 		Role:     user.Role,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -113,7 +115,7 @@ func parseToken(tokenString string) (*authClaims, error) {
 		return nil, err
 	}
 
-	if !token.Valid || strings.TrimSpace(claims.Username) == "" {
+	if !token.Valid || claims.UserID == 0 || strings.TrimSpace(claims.Username) == "" {
 		return nil, errors.New("invalid token")
 	}
 

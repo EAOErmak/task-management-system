@@ -24,6 +24,7 @@ func diaryDB(c *gin.Context) *gorm.DB {
 
 func preloadDiaryEntry(db *gorm.DB) *gorm.DB {
 	return db.
+		Preload("User").
 		Preload("Metrics.MetricType").
 		Preload("Metrics.Values.Unit")
 }
@@ -43,6 +44,22 @@ func parseUintParam(c *gin.Context, name string) (uint, bool) {
 	}
 
 	return uint(id), true
+}
+
+func currentAuthClaims(c *gin.Context) (*authClaims, bool) {
+	rawClaims, exists := c.Get(authClaimsContextKey)
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "missing auth context"})
+		return nil, false
+	}
+
+	claims, ok := rawClaims.(*authClaims)
+	if !ok || claims == nil || claims.UserID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid auth context"})
+		return nil, false
+	}
+
+	return claims, true
 }
 
 func ensureDictionaryItemExists(tx *gorm.DB, itemID uint) error {

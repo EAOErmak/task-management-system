@@ -9,6 +9,8 @@ import (
 
 type DiaryEntry struct {
 	BaseModel
+	UserID      uint          `gorm:"column:user_id;not null;index" json:"user_id"`
+	User        *User         `gorm:"foreignKey:UserID" json:"user,omitempty"`
 	Metrics     []EntryMetric `gorm:"foreignKey:DiaryEntryID;constraint:OnDelete:CASCADE;" json:"metrics,omitempty"`
 	WhenStarted time.Time     `gorm:"column:when_started;not null" json:"when_started"`
 	WhenEnded   time.Time     `gorm:"column:when_ended;not null" json:"when_ended"`

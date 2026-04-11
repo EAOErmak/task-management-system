@@ -32,6 +32,7 @@ func main() {
 	diary.Use(handlers.AuthMiddleware())
 	{
 		diary.GET("", handlers.GetAllMineDiaryEntries)
+		diary.GET("/all", handlers.GetAllDiaryEntriesForAllUsers)
 		diary.POST("", handlers.CreateDiaryEntry)
 		diary.GET("/:id", handlers.GetDiaryEntryByID)
 		diary.PUT("/:id", handlers.UpdateDiaryEntry)

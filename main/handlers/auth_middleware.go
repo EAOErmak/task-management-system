@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const authClaimsContextKey = "authClaims"
+
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := strings.TrimSpace(c.GetHeader("Authorization"))
@@ -23,13 +25,14 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		_, err := parseToken(strings.TrimSpace(parts[1]))
+		claims, err := parseToken(strings.TrimSpace(parts[1]))
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
 			c.Abort()
 			return
 		}
 
+		c.Set(authClaimsContextKey, claims)
 		c.Next()
 	}
 }
