@@ -14,22 +14,29 @@ func main() {
 	}
 
 	router := gin.Default()
+
 	router.POST("/register", handlers.Register)
 	router.POST("/login", handlers.Login)
 
-	protected := router.Group("/")
-	protected.Use(handlers.AuthMiddleware())
-	protected.GET("/dictionary-items", handlers.GetAllDictionaryItems)
-	protected.POST("/dictionary-items", handlers.CreateDictionaryItem)
-	protected.GET("/dictionary-items/:id", handlers.GetDictionaryItemByID)
-	protected.PUT("/dictionary-items/:id", handlers.UpdateDictionaryItem)
-	protected.DELETE("/dictionary-items/:id", handlers.DeleteDictionaryItem)
+	dictionary := router.Group("/dictionary-items")
+	dictionary.Use(handlers.AuthMiddleware())
+	{
+		dictionary.GET("", handlers.GetAllDictionaryItems)
+		dictionary.POST("", handlers.CreateDictionaryItem)
+		dictionary.GET("/:id", handlers.GetDictionaryItemByID)
+		dictionary.PUT("/:id", handlers.UpdateDictionaryItem)
+		dictionary.DELETE("/:id", handlers.DeleteDictionaryItem)
+	}
 
-	protected.GET("/diary-entries", handlers.GetAllDiaryEntries)
-	protected.POST("/diary-entries", handlers.CreateDiaryEntry)
-	protected.GET("/diary-entries/:id", handlers.GetDiaryEntryByID)
-	protected.PUT("/diary-entries/:id", handlers.UpdateDiaryEntry)
-	protected.DELETE("/diary-entries/:id", handlers.DeleteDiaryEntry)
+	diary := router.Group("/diary")
+	diary.Use(handlers.AuthMiddleware())
+	{
+		diary.GET("", handlers.GetAllDiaryEntries)
+		diary.POST("", handlers.CreateDiaryEntry)
+		diary.GET("/:id", handlers.GetDiaryEntryByID)
+		diary.PUT("/:id", handlers.UpdateDiaryEntry)
+		diary.DELETE("/:id", handlers.DeleteDiaryEntry)
+	}
 
 	router.Run(":8080")
 }
