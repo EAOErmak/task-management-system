@@ -18,26 +18,5 @@ func main() {
 	router.POST("/register", handlers.Register)
 	router.POST("/login", handlers.Login)
 
-	dictionary := router.Group("/dictionary-items")
-	dictionary.Use(handlers.AuthMiddleware())
-	{
-		dictionary.GET("", handlers.GetAllDictionaryItems)
-		dictionary.POST("", handlers.CreateDictionaryItem)
-		dictionary.GET("/:id", handlers.GetDictionaryItemByID)
-		dictionary.PUT("/:id", handlers.UpdateDictionaryItem)
-		dictionary.DELETE("/:id", handlers.DeleteDictionaryItem)
-	}
-
-	diary := router.Group("/diary")
-	diary.Use(handlers.AuthMiddleware())
-	{
-		diary.GET("", handlers.GetAllMineDiaryEntries)
-		diary.GET("/all", handlers.GetAllDiaryEntriesForAllUsers)
-		diary.POST("", handlers.CreateDiaryEntry)
-		diary.GET("/:id", handlers.GetDiaryEntryByID)
-		diary.PUT("/:id", handlers.UpdateDiaryEntry)
-		diary.DELETE("/:id", handlers.DeleteDiaryEntry)
-	}
-
 	router.Run(":8080")
 }

@@ -44,13 +44,7 @@ func dropLegacyIndexes(db *gorm.DB) error {
 	indexes := []struct {
 		model any
 		name  string
-	}{
-		{model: &models.DictionaryItem{}, name: "udx_dictionary_type_label"},
-		{model: &models.DiaryEntry{}, name: "idx_diary_started"},
-		{model: &models.EntryMetric{}, name: "idx_metric_type"},
-		{model: &models.EntryMetric{}, name: "idx_metric_entry"},
-		{model: &models.EntryMetricValue{}, name: "udx_metric_unit"},
-	}
+	}{}
 
 	for _, index := range indexes {
 		if !db.Migrator().HasIndex(index.model, index.name) {
