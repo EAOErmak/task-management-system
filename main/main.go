@@ -31,7 +31,7 @@ func main() {
 	diary := router.Group("/diary")
 	diary.Use(handlers.AuthMiddleware())
 	{
-		diary.GET("", handlers.GetAllDiaryEntries)
+		diary.GET("", handlers.GetAllMineDiaryEntries)
 		diary.POST("", handlers.CreateDiaryEntry)
 		diary.GET("/:id", handlers.GetDiaryEntryByID)
 		diary.PUT("/:id", handlers.UpdateDiaryEntry)
