@@ -10,7 +10,7 @@ import (
 var DB *gorm.DB
 
 func InitDB() error {
-	dsn := "host=localhost user=postgres password=postgres dbname=postgres port=5432 sslmode=disable"
+	dsn := "host=localhost user=postgres password=postgres dbname=book_store port=5432 sslmode=disable"
 	if dsn == "" {
 		return errors.New("DATABASE_URL is not set")
 	}
