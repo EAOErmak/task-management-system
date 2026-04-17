@@ -9,7 +9,7 @@ const DefaultUserRole = "user"
 
 type User struct {
 	BaseModel
-	Username string `gorm:"column:username;not null" json:"username"`
+	Username string `gorm:"column:username;not null;uniqueIndex" json:"username"`
 	Password string `gorm:"column:password;not null" json:"-"`
 	Role     string `gorm:"column:role;not null" json:"role"`
 }
