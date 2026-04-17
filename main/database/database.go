@@ -24,10 +24,10 @@ func InitDB() error {
 
 	if err := db.AutoMigrate(
 		&models.User{},
-		&models.DictionaryItem{},
-		&models.DiaryEntry{},
-		&models.EntryMetric{},
-		&models.EntryMetricValue{},
+		&models.Author{},
+		&models.Category{},
+		&models.Book{},
+		&models.FavoriteBook{},
 	); err != nil {
 		return err
 	}

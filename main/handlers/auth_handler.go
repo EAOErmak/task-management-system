@@ -14,7 +14,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	db := diaryDB(c)
+	db := appDB(c)
 	if db == nil {
 		return
 	}
@@ -44,7 +44,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	db := diaryDB(c)
+	db := appDB(c)
 	if db == nil {
 		return
 	}
