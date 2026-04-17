@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"go-learn/main/models"
+	"go-learn/main/requests"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -22,11 +23,11 @@ func GetAllBooks(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, books)
+	c.JSON(http.StatusOK, requests.NewBookResponses(books))
 }
 
 func CreateBook(c *gin.Context) {
-	var req bookRequest
+	var req requests.BookCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
 		return
@@ -74,7 +75,7 @@ func CreateBook(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, book)
+	c.JSON(http.StatusCreated, requests.NewBookResponse(book))
 }
 
 func GetBookByID(c *gin.Context) {
@@ -94,7 +95,7 @@ func GetBookByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, book)
+	c.JSON(http.StatusOK, requests.NewBookResponse(book))
 }
 
 func UpdateBook(c *gin.Context) {
@@ -103,7 +104,7 @@ func UpdateBook(c *gin.Context) {
 		return
 	}
 
-	var req bookRequest
+	var req requests.BookCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
 		return
@@ -154,7 +155,7 @@ func UpdateBook(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, book)
+	c.JSON(http.StatusOK, requests.NewBookResponse(book))
 }
 
 func DeleteBook(c *gin.Context) {
@@ -179,5 +180,5 @@ func DeleteBook(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, book)
+	c.JSON(http.StatusOK, requests.NewBookResponse(book))
 }

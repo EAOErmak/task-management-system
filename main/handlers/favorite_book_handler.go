@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"go-learn/main/models"
+	"go-learn/main/requests"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -27,7 +28,7 @@ func GetFavoriteBooks(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, favorites)
+	c.JSON(http.StatusOK, requests.NewFavoriteBookResponses(favorites))
 }
 
 func AddFavoriteBook(c *gin.Context) {
@@ -36,7 +37,7 @@ func AddFavoriteBook(c *gin.Context) {
 		return
 	}
 
-	var req favoriteBookRequest
+	var req requests.FavoriteBookCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
 		return
@@ -71,7 +72,7 @@ func AddFavoriteBook(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, favorite)
+	c.JSON(http.StatusCreated, requests.NewFavoriteBookResponse(favorite))
 }
 
 func DeleteFavoriteBook(c *gin.Context) {
@@ -101,5 +102,5 @@ func DeleteFavoriteBook(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, favorite)
+	c.JSON(http.StatusOK, requests.NewFavoriteBookResponse(favorite))
 }

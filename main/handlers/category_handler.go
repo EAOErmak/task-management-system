@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"go-learn/main/models"
+	"go-learn/main/requests"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,11 +23,11 @@ func GetAllCategories(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, categories)
+	c.JSON(http.StatusOK, requests.NewCategoryResponses(categories))
 }
 
 func CreateCategory(c *gin.Context) {
-	var req namedEntityRequest
+	var req requests.CategoryCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
 		return
@@ -54,7 +55,7 @@ func CreateCategory(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, category)
+	c.JSON(http.StatusCreated, requests.NewCategoryResponse(category))
 }
 
 func GetCategoryByID(c *gin.Context) {
@@ -74,7 +75,7 @@ func GetCategoryByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, category)
+	c.JSON(http.StatusOK, requests.NewCategoryResponse(category))
 }
 
 func UpdateCategory(c *gin.Context) {
@@ -83,7 +84,7 @@ func UpdateCategory(c *gin.Context) {
 		return
 	}
 
-	var req namedEntityRequest
+	var req requests.CategoryCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
 		return
@@ -117,7 +118,7 @@ func UpdateCategory(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, category)
+	c.JSON(http.StatusOK, requests.NewCategoryResponse(category))
 }
 
 func DeleteCategory(c *gin.Context) {
@@ -142,5 +143,5 @@ func DeleteCategory(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, category)
+	c.JSON(http.StatusOK, requests.NewCategoryResponse(category))
 }

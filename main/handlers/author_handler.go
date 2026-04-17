@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"go-learn/main/models"
+	"go-learn/main/requests"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,11 +23,11 @@ func GetAllAuthors(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, authors)
+	c.JSON(http.StatusOK, requests.NewAuthorResponses(authors))
 }
 
 func CreateAuthor(c *gin.Context) {
-	var req namedEntityRequest
+	var req requests.AuthorCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
 		return
@@ -54,7 +55,7 @@ func CreateAuthor(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, author)
+	c.JSON(http.StatusCreated, requests.NewAuthorResponse(author))
 }
 
 func GetAuthorByID(c *gin.Context) {
@@ -74,7 +75,7 @@ func GetAuthorByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, author)
+	c.JSON(http.StatusOK, requests.NewAuthorResponse(author))
 }
 
 func UpdateAuthor(c *gin.Context) {
@@ -83,7 +84,7 @@ func UpdateAuthor(c *gin.Context) {
 		return
 	}
 
-	var req namedEntityRequest
+	var req requests.AuthorCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
 		return
@@ -117,7 +118,7 @@ func UpdateAuthor(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, author)
+	c.JSON(http.StatusOK, requests.NewAuthorResponse(author))
 }
 
 func DeleteAuthor(c *gin.Context) {
@@ -142,5 +143,5 @@ func DeleteAuthor(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, author)
+	c.JSON(http.StatusOK, requests.NewAuthorResponse(author))
 }
