@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"go-learn/main/models"
+	"go-learn/main/requests"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +28,7 @@ func GetAllMineDiaryEntries(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, entries)
+	c.JSON(http.StatusOK, requests.NewDiaryEntryResponses(entries))
 }
 
 func GetAllDiaryEntriesForAllUsers(c *gin.Context) {
@@ -42,11 +43,11 @@ func GetAllDiaryEntriesForAllUsers(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, entries)
+	c.JSON(http.StatusOK, requests.NewDiaryEntryResponses(entries))
 }
 
 func CreateDiaryEntry(c *gin.Context) {
-	var req diaryEntryRequest
+	var req requests.DiaryEntryCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
 		return
@@ -85,7 +86,7 @@ func CreateDiaryEntry(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, entry)
+	c.JSON(http.StatusCreated, requests.NewDiaryEntryResponse(*entry))
 }
 
 func GetDiaryEntryByID(c *gin.Context) {
@@ -110,7 +111,7 @@ func GetDiaryEntryByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, entry)
+	c.JSON(http.StatusOK, requests.NewDiaryEntryResponse(entry))
 }
 
 func UpdateDiaryEntry(c *gin.Context) {
@@ -124,7 +125,7 @@ func UpdateDiaryEntry(c *gin.Context) {
 		return
 	}
 
-	var req diaryEntryRequest
+	var req requests.DiaryEntryCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
 		return
@@ -163,7 +164,7 @@ func UpdateDiaryEntry(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, entry)
+	c.JSON(http.StatusOK, requests.NewDiaryEntryResponse(entry))
 }
 
 func DeleteDiaryEntry(c *gin.Context) {
@@ -194,5 +195,5 @@ func DeleteDiaryEntry(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, entry)
+	c.JSON(http.StatusOK, requests.NewDiaryEntryResponse(entry))
 }

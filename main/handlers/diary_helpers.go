@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go-learn/main/database"
 	"go-learn/main/models"
+	"go-learn/main/requests"
 	"net/http"
 	"strconv"
 	"strings"
@@ -79,8 +80,8 @@ func ensureRecordExists(tx *gorm.DB, model any, id uint, entityName string) erro
 	return nil
 }
 
-func createMetricRecords(tx *gorm.DB, entryID uint, requests []entryMetricRequest) error {
-	for _, req := range requests {
+func createMetricRecords(tx *gorm.DB, entryID uint, metricRequests []requests.EntryMetricCreateRequest) error {
+	for _, req := range metricRequests {
 		metric, err := buildMetric(entryID, req)
 		if err != nil {
 			return err
@@ -114,7 +115,7 @@ func createMetricRecords(tx *gorm.DB, entryID uint, requests []entryMetricReques
 	return nil
 }
 
-func buildMetric(entryID uint, req entryMetricRequest) (*models.EntryMetric, error) {
+func buildMetric(entryID uint, req requests.EntryMetricCreateRequest) (*models.EntryMetric, error) {
 	metric, err := models.NewEntryMetric(entryID, req.MetricTypeID)
 	if err != nil {
 		return nil, err

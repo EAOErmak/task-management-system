@@ -1,14 +1,15 @@
 package handlers
 
 import (
-	"go-learn/main/models"
 	"net/http"
+
+	"go-learn/main/requests"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Register(c *gin.Context) {
-	var req registerRequest
+	var req requests.UserCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
 		return
@@ -31,14 +32,14 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, registerResponse{
+	c.JSON(http.StatusCreated, requests.RegisterResponse{
 		Token: token,
-		User:  newAuthUserDTO(*user),
+		User:  requests.NewUserResponse(*user),
 	})
 }
 
 func Login(c *gin.Context) {
-	var req loginRequest
+	var req requests.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
 		return
@@ -61,13 +62,5 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, loginResponse{Token: token})
-}
-
-func newAuthUserDTO(user models.User) authUserDTO {
-	return authUserDTO{
-		ID:       user.ID,
-		Username: user.Username,
-		Role:     user.Role,
-	}
+	c.JSON(http.StatusOK, requests.LoginResponse{Token: token})
 }

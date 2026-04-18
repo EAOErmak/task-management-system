@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"go-learn/main/models"
+	"go-learn/main/requests"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -35,11 +36,11 @@ func GetAllDictionaryItems(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, items)
+	c.JSON(http.StatusOK, requests.NewDictionaryItemResponses(items))
 }
 
 func CreateDictionaryItem(c *gin.Context) {
-	var req dictionaryItemRequest
+	var req requests.DictionaryItemCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
 		return
@@ -77,7 +78,7 @@ func CreateDictionaryItem(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, item)
+	c.JSON(http.StatusCreated, requests.NewDictionaryItemResponse(*item))
 }
 
 func GetDictionaryItemByID(c *gin.Context) {
@@ -102,7 +103,7 @@ func GetDictionaryItemByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, item)
+	c.JSON(http.StatusOK, requests.NewDictionaryItemResponse(item))
 }
 
 func UpdateDictionaryItem(c *gin.Context) {
@@ -111,7 +112,7 @@ func UpdateDictionaryItem(c *gin.Context) {
 		return
 	}
 
-	var req dictionaryItemRequest
+	var req requests.DictionaryItemCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json"})
 		return
@@ -164,7 +165,7 @@ func UpdateDictionaryItem(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, item)
+	c.JSON(http.StatusOK, requests.NewDictionaryItemResponse(item))
 }
 
 func DeleteDictionaryItem(c *gin.Context) {
@@ -205,5 +206,5 @@ func DeleteDictionaryItem(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, item)
+	c.JSON(http.StatusOK, requests.NewDictionaryItemResponse(item))
 }
